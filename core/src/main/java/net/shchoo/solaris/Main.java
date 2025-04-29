@@ -18,6 +18,12 @@ public class Main extends Game {
    public CardGame cardGame;
    public ShapeRenderer shape;
 
+   public float enemyHealth = 10;
+   public float enemyMaxHealth = 10;
+   public float playerHealth = 8;
+   public float playerMaxHealth = 12;
+   public float playerBlock = 0;
+
    public void create() {
       batch = new SpriteBatch();
       shape = new ShapeRenderer(); 

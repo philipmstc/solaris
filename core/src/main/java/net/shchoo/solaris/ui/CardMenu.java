@@ -8,19 +8,20 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.Align;
 
 import net.shchoo.solaris.Main;
+import net.shchoo.solaris.cards.Card;
 import net.shchoo.solaris.utils.Provider;
 
-public class CardMenu extends Menu<DisplayableCard> {
+public class CardMenu extends Menu<Card> {
     private float xPos;
     private float yPos;
     private boolean isInit = false;
 
-    public CardMenu(List<String> selections,
+    public CardMenu(List<Card> cards,
                     Provider<Float> xStart, 
                     Provider<Float> yStart, 
                     float xOffset, 
                     float yOffset ) {
-        super(selections.stream().map(DisplayableCard::new).collect(Collectors.toList()),
+        super(cards,
               xStart, 
               yStart, 
               xOffset, 
@@ -40,8 +41,8 @@ public class CardMenu extends Menu<DisplayableCard> {
             isInit = false;
         }
         for (int i = 0; i < count; i++) { 
-            float sequence = count - i - 1;
-            if (selection == i) {
+            float sequence = i ;
+            if (current == i) {
                 game.smallFont.setColor(Color.CYAN);
             }
             else { 
@@ -58,7 +59,7 @@ public class CardMenu extends Menu<DisplayableCard> {
             
             game.batch.begin(); 
             game.smallFont.draw(game.batch,
-                this.selections.get(i).text, 
+                this.selections.get(i).name, 
                 (xOffset * sequence) + xPos, 
                 (yOffset * sequence) + yPos,
                 0,

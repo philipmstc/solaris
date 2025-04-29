@@ -49,7 +49,7 @@ public class MainMenuScreen extends DefaultInputScreen {
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.ENTER) {
-            switch (menu.selection) { 
+            switch (menu.current) { 
                 case 0: 
                     game.setScreen(new GameScreen(game));
                     dispose();

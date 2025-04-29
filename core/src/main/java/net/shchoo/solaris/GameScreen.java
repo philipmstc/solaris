@@ -13,6 +13,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import net.shchoo.solaris.entity.Deck;
+import net.shchoo.solaris.entity.Enemy;
+import net.shchoo.solaris.entity.Player;
 import net.shchoo.solaris.ui.DisplayableString;
 import net.shchoo.solaris.ui.Menu;
 
@@ -42,9 +45,9 @@ public class GameScreen extends DefaultInputScreen {
     @Override
     public boolean keyDown(int keycode) { 
         if (keycode == Input.Keys.ENTER) { 
-            switch (menu.selection) { 
+            switch (menu.current) { 
                 case 0: 
-                    game.setScreen(new CardGameScreen(game));
+                    game.setScreen(new CardGameScreen(game, new Enemy(), new Player(), new Deck()));
                     dispose();
                     break;
             }

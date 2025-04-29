@@ -40,7 +40,7 @@ public class StringMenu extends Menu<DisplayableString> {
         }
         for (int i = 0; i < count; i++) {
             float sequence = count - i - 1;
-            if (selection == i) {
+            if (current == i) {
                 game.smallFont.setColor(Color.CYAN);
             } else {
                 game.smallFont.setColor(Color.WHITE);

@@ -8,10 +8,11 @@ import com.badlogic.gdx.Input;
 import net.shchoo.solaris.Main;
 import net.shchoo.solaris.utils.Provider;
 
-public abstract class Menu<D extends Displayable> {
-    public int selection = 0;
-    protected final int count;
-    protected final List<D> selections;
+public abstract class Menu<D> {
+    public int current = 0;
+    public int count;
+    public D selection;
+    protected List<D> selections;
     protected final float xOffset;
     protected final float yOffset;
     protected final Provider<Float> xStart;
@@ -23,8 +24,8 @@ public abstract class Menu<D extends Displayable> {
                 Provider<Float> yStart, 
                 float xOffset, 
                 float yOffset) {
-        this.count = selections.size();
         this.selections = selections;
+        this.count = this.selections.size();
         this.inputMap = xOffset != 0 ? Menu.horizontalKeyboardInput : Menu.verticalKeyboardInput;
         this.xStart = xStart;
         this.yStart = yStart;
@@ -54,17 +55,23 @@ public abstract class Menu<D extends Displayable> {
         if (inputMap.containsKey(keycode)) {
             int dir = inputMap.get(keycode);
             if (dir == 1) { 
-                if (selection == 0) {
-                    selection = count - 1;
-                }
-                else { 
-                    selection = selection - 1;
-                }
+                current = (current + 1) % count;
             }
             else if (dir == -1) { 
-                selection = (selection + 1) % count;
+                if (current == 0) { 
+                    current = count - 1;
+                }
+                else { 
+                    current = current - 1;
+                }
             }
+            selection = selections.get(current);
         }
+    }
+
+    public void addSelection(D selection) { 
+        this.selections.add(selection);
+        this.count = selections.size();
     }
 
     public static Menu<DisplayableString> basicMenu(
@@ -91,8 +98,8 @@ public abstract class Menu<D extends Displayable> {
 
     private static Map<Integer, Integer> verticalKeyboardInput = new HashMap<Integer, Integer>() {
         {
-            put(Input.Keys.UP, 1);
-            put(Input.Keys.DOWN, -1);
+            put(Input.Keys.UP, -1);
+            put(Input.Keys.DOWN, 1);
         }
     };
 
