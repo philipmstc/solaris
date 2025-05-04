@@ -15,7 +15,6 @@ import net.shchoo.solaris.cards.Cards;
 
 public class Deck implements Entity {
 
-    public int count;
     public ArrayList<Card> cards;
 
     // default --- please make better?
@@ -23,10 +22,9 @@ public class Deck implements Entity {
         this.cards = new ArrayList<Card>() {{
             add(Cards.Attack);
             add(Cards.Scrape);
-            add(Cards.Attack);
+            add(Cards.Scrape);
             add(Cards.Defend);
         }};
-        this.count = cards.size();
     }
 
     public List<Card> draw(int count) { 
@@ -34,26 +32,19 @@ public class Deck implements Entity {
         for (int i = 0; i < count; i++) {
             drawn.add(cards.remove(0));
         }
-        this.count -= count;
         return drawn;
     }
 
     @Override
     public void render(Main game, float x, float y, float delta) { 
-        game.shape.begin(ShapeType.Line);
-        game.shape.setColor(Color.WHITE);
-        game.shape.rect(
-            game.viewport.getWorldWidth() / 8,
-            (game.viewport.getWorldHeight()/1) - 2.0f,
-            0.0f,
-            0.0f);
-        game.shape.end();
+       
         game.batch.begin();
+        game.smallFont.setColor(Color.LIME);
         game.smallFont.draw(game.batch,
-            count +"", 
-            -1.05f+(game.viewport.getWorldWidth()/9),
-            -1.05f+(game.viewport.getWorldHeight()/2)-2.0f,
-            -1,
+            "Deck: " + cards.size(), 
+            (game.viewport.getWorldWidth()/2),
+            (game.viewport.getWorldHeight()/2),
+            0.00f,
             Align.center,
             false) ;
         game.batch.end();

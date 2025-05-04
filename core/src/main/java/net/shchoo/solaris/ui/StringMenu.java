@@ -38,8 +38,8 @@ public class StringMenu extends Menu<DisplayableString> {
             init();
             isInit = false;
         }
-        for (int i = 0; i < count; i++) {
-            float sequence = count - i - 1;
+        for (int i = 0; i < selections.size(); i++) {
+            float sequence = selections.size() - i - 1;
             if (current == i) {
                 game.smallFont.setColor(Color.CYAN);
             } else {

@@ -28,6 +28,10 @@ public class CardMenu extends Menu<Card> {
               yOffset);
     }
 
+    public Card removeCurrent() {
+        return this.selections.remove(current);
+    }
+
     @Override 
     public void init() {
         xPos = xStart.get();
@@ -40,7 +44,7 @@ public class CardMenu extends Menu<Card> {
             init();
             isInit = false;
         }
-        for (int i = 0; i < count; i++) { 
+        for (int i = 0; i < selections.size(); i++) { 
             float sequence = i ;
             if (current == i) {
                 game.smallFont.setColor(Color.CYAN);

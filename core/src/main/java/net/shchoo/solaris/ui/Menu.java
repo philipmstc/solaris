@@ -10,7 +10,7 @@ import net.shchoo.solaris.utils.Provider;
 
 public abstract class Menu<D> {
     public int current = 0;
-    public int count;
+    private int count;
     public D selection;
     protected List<D> selections;
     protected final float xOffset;
@@ -26,6 +26,7 @@ public abstract class Menu<D> {
                 float yOffset) {
         this.selections = selections;
         this.count = this.selections.size();
+        this.selection = selections.get(0);
         this.inputMap = xOffset != 0 ? Menu.horizontalKeyboardInput : Menu.verticalKeyboardInput;
         this.xStart = xStart;
         this.yStart = yStart;
@@ -38,6 +39,7 @@ public abstract class Menu<D> {
             Provider<Float> xStart, Provider<Float> yStart, float xOffset, float yOffset) {
         this.count = selections.size();
         this.selections = selections;
+        this.selection = selections.get(0);
         this.inputMap = inputMap;
         this.xOffset = xOffset;
         this.yOffset = yOffset;
@@ -50,6 +52,12 @@ public abstract class Menu<D> {
     
     // to avoid repeatedly loading lazy parameters
     public abstract void init();
+
+    public void reset() {
+        this.current = 0;
+        this.count = selections.size();
+        this.selection = selections.get(0); // TODO NPE possible if hand exhausts, for example
+    }
 
     public void handleKeyPress(int keycode) { 
         if (inputMap.containsKey(keycode)) {

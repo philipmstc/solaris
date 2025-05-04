@@ -14,10 +14,17 @@ public abstract class Card extends Entity {
    
     public final String name;
 
-    public abstract void onPlay(Main game);
+    public abstract Destination onPlay(Main game);
 
     public Card(String name) {
         this.name = name;
+    }
+
+    public enum Destination {
+        DISCARD,
+        DRAW,
+        EXILE,
+        REMOVED
     }
 
 }

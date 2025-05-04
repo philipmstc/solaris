@@ -5,34 +5,38 @@ import net.shchoo.solaris.CardGame;
 import net.shchoo.solaris.Main;
 
 public class Cards {
-    public static final Card Attack = new Card("Attack\nDeal 1 Damage") {
+    public static final Card Attack = new Card("Attack") {
         @Override
-        public void onPlay(Main game) {
+        public Destination onPlay(Main game) {
             game.enemyHealth -= 1;
+            return Destination.DISCARD;
         }
     };
-    public static final Card Defend = new Card("Defend\nBlock 1") {
+    public static final Card Defend = new Card("Defend") {
         @Override
-        public void onPlay(Main game) {
+        public Destination onPlay(Main game) {
             game.playerBlock += 1;
+            return Destination.DISCARD;
         }
     };
-    public static final Card Scrape = new Card("Scrape\nDraw 1") {
+    public static final Card Scrape = new Card("Draw 1") {
         @Override
-        public void onPlay(Main game) {
-
+        public Destination onPlay(Main game) {
+            return Destination.EXILE;
         }
     };
     public static final Card X = new Card("X") {
 
         @Override
-        public void onPlay(Main game) {
+        public Destination onPlay(Main game) {
+            return Destination.DISCARD;
         }
     };
     public static final Card Y = new Card("Y") {
 
         @Override
-        public void onPlay(Main game) {
+        public Destination onPlay(Main game) {
+            return Destination.DISCARD;
         }
     };
 
