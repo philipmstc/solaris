@@ -23,8 +23,6 @@ public class MainMenuScreen extends DefaultInputScreen {
         );
     }
     
-    private boolean isInitted = false;
-
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);

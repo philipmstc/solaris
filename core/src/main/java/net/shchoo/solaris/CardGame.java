@@ -1,8 +1,5 @@
 package net.shchoo.solaris;
 
-import java.util.List;
-import java.util.function.Consumer;
-
 public class CardGame {
     final Main game;
     public CardBatch cardBatch;

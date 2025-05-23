@@ -1,7 +1,6 @@
 package net.shchoo.solaris.ui;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -14,7 +13,7 @@ import net.shchoo.solaris.utils.Provider;
 public class CardMenu extends Menu<Card> {
     private float xPos;
     private float yPos;
-    
+
     public CardMenu(List<Card> cards,
                     Provider<Float> xStart, 
                     Provider<Float> yStart, 

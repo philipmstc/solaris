@@ -1,10 +1,8 @@
 package net.shchoo.solaris.cards;
 
-import java.util.function.Consumer;
 import com.badlogic.ashley.core.Entity;
 
 import net.shchoo.solaris.Main;
-import net.shchoo.solaris.CardGame;
 
 public abstract class Card extends Entity {
    // Entity has Components

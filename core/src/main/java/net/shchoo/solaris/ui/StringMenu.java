@@ -2,7 +2,6 @@ package net.shchoo.solaris.ui;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;

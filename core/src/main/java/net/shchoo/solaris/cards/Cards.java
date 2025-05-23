@@ -1,7 +1,5 @@
 package net.shchoo.solaris.cards;
 
-import com.badlogic.ashley.utils.Bag;
-import net.shchoo.solaris.CardGame;
 import net.shchoo.solaris.Main;
 
 public class Cards {
