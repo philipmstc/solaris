@@ -58,7 +58,7 @@ public class CardGameScreen extends DefaultInputScreen {
             false);
         game.batch.end();
         enemy.render(game, game.viewport.getWorldWidth() / 3, game.viewport.getWorldHeight() - 2.0f, delta);
-        player.render(game, 0, 0, delta);
+        player.render(game, game.viewport.getWorldWidth() / 3, game.viewport.getWorldHeight() - 1.5f, delta);
         menu.render(game);
     }
 

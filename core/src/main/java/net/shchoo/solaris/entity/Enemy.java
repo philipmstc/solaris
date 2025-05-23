@@ -2,6 +2,7 @@ package net.shchoo.solaris.entity;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.utils.Align;
 
 import net.shchoo.solaris.Entity;
 import net.shchoo.solaris.Main;
@@ -9,6 +10,10 @@ import net.shchoo.solaris.Main;
 public class Enemy implements Entity {
     @Override
     public void render(Main game, float x, float y, float delta) {
+        game.batch.begin();
+        game.smallFont.setColor(Color.WHITE);
+        game.smallFont.draw(game.batch, "Enemy HP: ", x - 1.30f, y+0.180f, 0.00f, Align.left, false);
+        game.batch.end();
         game.shape.begin(ShapeType.Filled);
         game.shape.setColor(Color.RED);
         game.shape.rect(

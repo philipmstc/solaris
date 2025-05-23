@@ -10,15 +10,14 @@ import com.badlogic.gdx.utils.Align;
 import net.shchoo.solaris.Main;
 import net.shchoo.solaris.utils.Provider;
 
-public class StringMenu extends Menu<DisplayableString> {
+public class StringMenu extends Menu<String> {
 
     private float xPos;
     private float yPos;
-    private boolean isInit = false;
 
     public StringMenu(List<String> selections, Map<Integer, Integer> inputMap, Provider<Float> xStart,
             Provider<Float> yStart, float xOffset, float yOffset) {
-        super(selections.stream().map(DisplayableString::new).collect(Collectors.toList()),
+        super(selections,
                 inputMap,
                 xStart,
                 yStart,
@@ -33,11 +32,7 @@ public class StringMenu extends Menu<DisplayableString> {
     }
 
     @Override
-    public void render(Main game) {
-        if (!isInit) { 
-            init();
-            isInit = false;
-        }
+    public void renderImpl(Main game) {
         for (int i = 0; i < selections.size(); i++) {
             float sequence = selections.size() - i - 1;
             if (current == i) {
@@ -46,7 +41,7 @@ public class StringMenu extends Menu<DisplayableString> {
                 game.smallFont.setColor(Color.WHITE);
             }
             game.smallFont.draw(game.batch,
-                    this.selections.get(i).selection,
+                    this.selections.get(i),
                     (xOffset * sequence) + xPos,
                     (yOffset * sequence) + yPos,
                     0,

@@ -14,8 +14,7 @@ import net.shchoo.solaris.utils.Provider;
 public class CardMenu extends Menu<Card> {
     private float xPos;
     private float yPos;
-    private boolean isInit = false;
-
+    
     public CardMenu(List<Card> cards,
                     Provider<Float> xStart, 
                     Provider<Float> yStart, 
@@ -39,11 +38,7 @@ public class CardMenu extends Menu<Card> {
     }
 
     @Override
-    public void render(Main game) { 
-        if (!isInit) { 
-            init();
-            isInit = false;
-        }
+    public void renderImpl(Main game) { 
         for (int i = 0; i < selections.size(); i++) { 
             float sequence = i ;
             if (current == i) {

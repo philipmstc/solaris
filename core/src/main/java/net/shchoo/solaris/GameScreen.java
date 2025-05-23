@@ -16,11 +16,10 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import net.shchoo.solaris.entity.Deck;
 import net.shchoo.solaris.entity.Enemy;
 import net.shchoo.solaris.entity.Player;
-import net.shchoo.solaris.ui.DisplayableString;
 import net.shchoo.solaris.ui.Menu;
 
 public class GameScreen extends DefaultInputScreen {
-    public final Menu<DisplayableString> menu;
+    public final Menu<String> menu;
     public GameScreen(Main game) {
         super(game);
         this.menu = Menu.basicMenu(

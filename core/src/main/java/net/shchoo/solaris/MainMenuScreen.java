@@ -7,11 +7,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-import net.shchoo.solaris.ui.DisplayableString;
 import net.shchoo.solaris.ui.Menu;
 
 public class MainMenuScreen extends DefaultInputScreen {
-    private final Menu<DisplayableString> menu;
+    private final Menu<String> menu;
 
     public MainMenuScreen(final Main game) { 
         super(game);

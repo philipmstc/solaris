@@ -9,6 +9,7 @@ import net.shchoo.solaris.Main;
 import net.shchoo.solaris.utils.Provider;
 
 public abstract class Menu<D> {
+    protected boolean isInit = false;
     public int current = 0;
     private int count;
     public D selection;
@@ -48,10 +49,18 @@ public abstract class Menu<D> {
     }
 
     // this must be called within Screen::render between batch begin/end
-    public abstract void render(Main game);
+    public void render(Main game) {
+        if (!isInit) {
+            init();
+            isInit = true;
+        }
+        renderImpl(game);
+    }
+
+    protected abstract void renderImpl(Main game);
     
     // to avoid repeatedly loading lazy parameters
-    public abstract void init();
+    protected abstract void init();
 
     public void reset() {
         this.current = 0;
@@ -82,7 +91,7 @@ public abstract class Menu<D> {
         this.count = selections.size();
     }
 
-    public static Menu<DisplayableString> basicMenu(
+    public static Menu<String> basicMenu(
             List<String> selections,
             Provider<Float> xStart,
             Provider<Float> yStart,
