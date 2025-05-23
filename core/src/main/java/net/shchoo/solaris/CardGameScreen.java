@@ -10,7 +10,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 import net.shchoo.solaris.cards.Card;
 import net.shchoo.solaris.cards.Card.Destination;
-import net.shchoo.solaris.cards.Cards;
 import net.shchoo.solaris.entity.Deck;
 import net.shchoo.solaris.entity.Enemy;
 import net.shchoo.solaris.entity.Player;
@@ -81,17 +80,20 @@ public class CardGameScreen extends DefaultInputScreen {
             else if (d == Destination.EXILE) {
                 // do _not_ discard
             }
-            if (played == Cards.Scrape) {
-                // TODO lists and stuff
-                if (deck.cards.size() == 0) { 
+            if (game.pendingDraw > 0) {
+                // TODO currently draws _ALL CARDS_ not 1 card at a time
+                List<Card> drawn = new ArrayList<>();
+                if (deck.cards.size() < game.pendingDraw) {
+                    drawn.addAll(deck.draw(game.pendingDraw - deck.cards.size()));
                     for (Card disc : discard) {
                         deck.cards.add(disc);
                         // deck.shuffle();
                     }
                     discard.clear();
                 }
-                List<Card> drawn = deck.draw(2);
+                drawn.addAll(deck.draw(game.pendingDraw - drawn.size()));
                 this.menu.addSelections(drawn);
+                game.pendingDraw = 0;
             }
             menu.reset();
         }

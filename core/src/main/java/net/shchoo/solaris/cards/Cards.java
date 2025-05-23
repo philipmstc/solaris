@@ -20,7 +20,7 @@ public class Cards {
     public static final Card Scrape = new Card("Draw 1") {
         @Override
         public Destination onPlay(Main game) {
-            game.pendingDraw += 1;
+            game.pendingDraw += 3;
             return Destination.EXILE;
         }
     };
