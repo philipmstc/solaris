@@ -29,8 +29,13 @@ public class CardGameScreen extends DefaultInputScreen {
         this.player = player;
         this.deck = deck;
         this.discard = new ArrayList<>();
-        this.menu = new CardMenu(
-                deck.draw(3),
+        this.menu = drawHand(player.startingHandSize);
+    }
+
+    private CardMenu drawHand(int handSize) {
+        List<Card> drawn = deck.draw(handSize);
+        return new CardMenu(
+                drawn,
                 () -> game.viewport.getWorldWidth() / 6,
                 () -> -2.0f + (game.viewport.getWorldHeight() / 2),
                 1.1f,
@@ -64,6 +69,10 @@ public class CardGameScreen extends DefaultInputScreen {
     public boolean keyDown(int keycode) {
         menu.handleKeyPress(keycode);
         if (keycode == Input.Keys.ENTER) {
+            if (menu.selection == null) {
+                // no cards in hand / none selected?
+                return false;
+            }
             Destination d = menu.selection.onPlay(game);
             Card played = menu.removeCurrent();
             if (d == Destination.DISCARD) { 
@@ -81,8 +90,8 @@ public class CardGameScreen extends DefaultInputScreen {
                     }
                     discard.clear();
                 }
-                List<Card> drawn = deck.draw(1);
-                this.menu.addSelection(drawn.get(0));
+                List<Card> drawn = deck.draw(2);
+                this.menu.addSelections(drawn);
             }
             menu.reset();
         }

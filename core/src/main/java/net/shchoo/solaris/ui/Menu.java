@@ -65,10 +65,19 @@ public abstract class Menu<D> {
     public void reset() {
         this.current = 0;
         this.count = selections.size();
-        this.selection = selections.get(0); // TODO NPE possible if hand exhausts, for example
+        if (count > 0) {
+            this.selection = selections.get(0); // TODO NPE possible if hand exhausts, for example
+        }
+        else {
+            this.selection = null;
+        }
     }
 
     public void handleKeyPress(int keycode) { 
+        if (count == 0) {
+            // ignore inputs if the menu is empty
+            return;
+        }
         if (inputMap.containsKey(keycode)) {
             int dir = inputMap.get(keycode);
             if (dir == 1) { 
@@ -88,6 +97,11 @@ public abstract class Menu<D> {
 
     public void addSelection(D selection) { 
         this.selections.add(selection);
+        this.count = selections.size();
+    }
+
+    public void addSelections(List<D> selections) {
+        this.selections.addAll(selections);
         this.count = selections.size();
     }
 

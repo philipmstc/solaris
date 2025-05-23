@@ -24,6 +24,8 @@ public class Main extends Game {
    public float playerMaxHealth = 12;
    public float playerBlock = 0;
 
+   public int pendingDraw = 0;
+
    public void create() {
       batch = new SpriteBatch();
       shape = new ShapeRenderer(); 

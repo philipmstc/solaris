@@ -15,12 +15,18 @@ public class Deck implements Entity {
 
     public ArrayList<Card> cards;
 
-    // default --- please make better?
+    // default deck constructor -- 4x attack, 4x defend, 2x draw
     public Deck() {
         this.cards = new ArrayList<Card>() {{
             add(Cards.Attack);
+            add(Cards.Attack);
+            add(Cards.Attack);
+            add(Cards.Attack);
             add(Cards.Scrape);
             add(Cards.Scrape);
+            add(Cards.Defend);
+            add(Cards.Defend);
+            add(Cards.Defend);
             add(Cards.Defend);
         }};
     }

@@ -9,6 +9,7 @@ import net.shchoo.solaris.Main;
 
 public class Player implements Entity {
 
+    public int startingHandSize = 5;
     @Override
     public void render(Main game, float x, float y, float delta) {
         game.batch.begin();
