@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import net.shchoo.solaris.cards.Card;
+import net.shchoo.solaris.cards.Card.Destination;
+
 public class Main extends Game {
    public SpriteBatch batch;
    public BitmapFont smallFont;
@@ -23,6 +26,8 @@ public class Main extends Game {
    public float playerHealth = 8;
    public float playerMaxHealth = 12;
    public float playerBlock = 0;
+   public int playerEnergy = 4;
+   public int playerMaxEnergy = 4;
 
    public int pendingDraw = 0;
 
@@ -30,16 +35,9 @@ public class Main extends Game {
       batch = new SpriteBatch();
       shape = new ShapeRenderer(); 
       
-      
       smallFont = new BitmapFont(Gdx.files.internal("comic-mono.fnt"));
       bigFont = new BitmapFont(Gdx.files.internal("comic-mono.fnt"));
       viewport = new FitViewport(8, 5);
-
-      // shape.scale(
-      //    viewport.getWorldWidth()/Gdx.graphics.getWidth(),
-      //    viewport.getWorldHeight() / Gdx.graphics.getHeight(),
-      //    1   
-      // );
       
       smallFont.setUseIntegerPositions(false);
       smallFont.getData().setScale(0.66f * (viewport.getWorldHeight() / Gdx.graphics.getHeight() ));
@@ -57,6 +55,11 @@ public class Main extends Game {
       batch.dispose();
       smallFont.dispose();
       bigFont.dispose();
+   }
+
+   public Destination play(Card card) {
+      playerEnergy -= card.cost;
+      return card.onPlay(this);
    }
 
    public void processCardEffects(List<Consumer<Main>> effects) {

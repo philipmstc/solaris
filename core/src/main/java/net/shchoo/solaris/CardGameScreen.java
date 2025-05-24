@@ -49,6 +49,14 @@ public class CardGameScreen extends DefaultInputScreen {
         game.shape.setProjectionMatrix(game.viewport.getCamera().combined);
         deck.render(game, game.viewport.getWorldWidth() / 8, -2.0f + (game.viewport.getWorldHeight() / 2), delta);
         // discard.render
+        renderDiscard();
+        renderEnergy();
+        enemy.render(game, game.viewport.getWorldWidth() / 3, game.viewport.getWorldHeight() - 2.0f, delta);
+        player.render(game, game.viewport.getWorldWidth() / 3, game.viewport.getWorldHeight() - 1.5f, delta);
+        menu.render(game);
+    }
+
+    private void renderDiscard() {
         game.batch.begin();
         game.smallFont.setColor(Color.CORAL);
         game.smallFont.draw(game.batch, 
@@ -59,20 +67,30 @@ public class CardGameScreen extends DefaultInputScreen {
             Align.center,
             false);
         game.batch.end();
-        enemy.render(game, game.viewport.getWorldWidth() / 3, game.viewport.getWorldHeight() - 2.0f, delta);
-        player.render(game, game.viewport.getWorldWidth() / 3, game.viewport.getWorldHeight() - 1.5f, delta);
-        menu.render(game);
+    }
+
+    private void renderEnergy() {
+        game.batch.begin();
+        game.smallFont.setColor(Color.GOLDENROD);
+        game.smallFont.draw(game.batch,
+            "Energy: " + game.playerEnergy + " / " + game.playerMaxEnergy,
+            2.0f + (game.viewport.getWorldWidth()/2),
+            0.25f + (game.viewport.getWorldHeight()/2),
+            0.00f,
+            Align.center,
+            false);
+        game.batch.end();
     }
 
     @Override
     public boolean keyDown(int keycode) {
         menu.handleKeyPress(keycode);
         if (keycode == Input.Keys.ENTER) {
-            if (menu.selection == null) {
-                // no cards in hand / none selected?
+            if (!isPlayable(menu.selection)) {
+                // no energy, or no selection
                 return false;
             }
-            Destination d = menu.selection.onPlay(game);
+            Destination d = game.play(menu.selection);
             Card played = menu.removeCurrent();
             if (d == Destination.DISCARD) { 
                 discard.add(played);
@@ -91,12 +109,18 @@ public class CardGameScreen extends DefaultInputScreen {
                     }
                     discard.clear();
                 }
-                drawn.addAll(deck.draw(game.pendingDraw - drawn.size()));
+                int amountLeftToDraw = Math.min(game.pendingDraw - drawn.size(), deck.cards.size());
+                drawn.addAll(deck.draw(amountLeftToDraw));
                 this.menu.addSelections(drawn);
                 game.pendingDraw = 0;
             }
             menu.reset();
         }
         return false;
+    }
+    
+    private boolean isPlayable(Card card) {
+        // thoughts -- "X" cost cards may need more than simple property
+        return card != null && card.cost <= game.playerEnergy;
     }
 }

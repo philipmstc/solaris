@@ -46,25 +46,49 @@ public class CardMenu extends Menu<Card> {
             else { 
                 game.smallFont.setColor(Color.WHITE);
             }
-            game.shape.begin(ShapeType.Line);
-			game.shape.setColor(Color.YELLOW);
-			game.shape.rect(
-                (xOffset * (sequence - 0.5f)) + xPos,
-                (yOffset * (sequence - 0.5f)) + yPos - 0.5f, 
-                xOffset - (xOffset*0.05f), 
-                1.0f);
-			game.shape.end();
-            
-            game.batch.begin(); 
-            game.smallFont.draw(game.batch,
-                this.selections.get(i).name, 
-                (xOffset * sequence) + xPos, 
-                (yOffset * sequence) + yPos,
-                0,
-                Align.center,
-                false
-            );
-            game.batch.end();
+            renderBox(game, sequence);
+            renderCost(game, i, sequence);
+            renderName(game, i, sequence);
         }
+    }
+
+    private void renderCost(Main game, int i, float sequence) {
+        game.batch.begin();
+        String dots = "";
+        for (int n = 0; n < selections.get(i).cost; n++) {
+            dots += "*";
+        }
+        game.smallFont.draw(game.batch, 
+            dots,
+            (xOffset * sequence) + xPos, 
+            (yOffset * sequence) + yPos  + 0.45f,
+            0,
+            Align.center,
+            false);
+        game.batch.end();
+    }
+
+    private void renderName(Main game, int i, float sequence) {
+        game.batch.begin(); 
+        game.smallFont.draw(game.batch,
+            this.selections.get(i).name, 
+            (xOffset * sequence) + xPos, 
+            (yOffset * sequence) + yPos,
+            0,
+            Align.center,
+            false
+        );
+        game.batch.end();
+    }
+
+    private void renderBox(Main game, float sequence) {
+        game.shape.begin(ShapeType.Line);
+        game.shape.setColor(Color.YELLOW);
+        game.shape.rect(
+            (xOffset * (sequence - 0.5f)) + xPos,
+            (yOffset * (sequence - 0.5f)) + yPos - 0.5f, 
+            xOffset - (xOffset * 0.05f), 
+            1.0f);
+        game.shape.end();
     }
 }

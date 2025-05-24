@@ -11,11 +11,13 @@ public abstract class Card extends Entity {
    // has a "is in the deck" component
    
     public final String name;
+    public final int cost;
 
     public abstract Destination onPlay(Main game);
 
-    public Card(String name) {
+    public Card(String name, int cost) {
         this.name = name;
+        this.cost = cost;
     }
 
     public enum Destination {
