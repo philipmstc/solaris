@@ -1,6 +1,7 @@
 package net.shchoo.solaris.entity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
@@ -31,11 +32,19 @@ public class Deck implements Entity {
         }};
     }
 
-    public List<Card> draw(int count) { 
-        List<Card> drawn = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
+    public List<Card> draw(int count, List<Card> discard) { 
+        List<Card> drawn = new ArrayList<>(); 
+        while (drawn.size() < count && cards.size() > 0) {
             drawn.add(cards.remove(0));
         }
+
+        if (drawn.size() < count && discard.size() > 0) {
+            cards.addAll(discard);
+            discard.clear();
+            Collections.shuffle(cards);
+            drawn.addAll(draw(count - drawn.size(), new ArrayList<>()));
+        }
+
         return drawn;
     }
 

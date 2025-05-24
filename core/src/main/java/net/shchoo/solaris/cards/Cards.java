@@ -17,10 +17,10 @@ public class Cards {
             return Destination.DISCARD;
         }
     };
-    public static final Card Scrape = new Card("Draw 3", 2) {
+    public static final Card Scrape = new Card("Draw 2", 2) {
         @Override
         public Destination onPlay(Main game) {
-            game.pendingDraw += 3;
+            game.pendingDraw += 2;
             return Destination.EXILE;
         }
     };

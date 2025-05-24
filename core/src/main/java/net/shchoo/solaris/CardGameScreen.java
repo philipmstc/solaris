@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -32,7 +33,7 @@ public class CardGameScreen extends DefaultInputScreen {
     }
 
     private CardMenu drawHand(int handSize) {
-        List<Card> drawn = deck.draw(handSize);
+        List<Card> drawn = deck.draw(handSize, discard);
         return new CardMenu(
                 drawn,
                 () -> game.viewport.getWorldWidth() / 6,
@@ -48,12 +49,36 @@ public class CardGameScreen extends DefaultInputScreen {
         game.batch.setProjectionMatrix(game.viewport.getCamera().combined);
         game.shape.setProjectionMatrix(game.viewport.getCamera().combined);
         deck.render(game, game.viewport.getWorldWidth() / 8, -2.0f + (game.viewport.getWorldHeight() / 2), delta);
-        // discard.render
         renderDiscard();
         renderEnergy();
         enemy.render(game, game.viewport.getWorldWidth() / 3, game.viewport.getWorldHeight() - 2.0f, delta);
         player.render(game, game.viewport.getWorldWidth() / 3, game.viewport.getWorldHeight() - 1.5f, delta);
         menu.render(game);
+
+        if (!game.isPlayerTurn) {
+            game.shape.begin(ShapeType.Filled);
+            game.shape.circle(
+                game.viewport.getWorldWidth()/2,
+                game.viewport.getWorldHeight()/2,
+                1 * (game.enemyTurnTimer / game.enemyTurnTotal));
+            game.shape.end();
+
+            // TODO this should probably NOT live in render... 
+            // I presume theres a logical processing equivalent to rendering
+            game.enemyTurnTimer -= 1;
+            if (game.enemyTurnTimer <= 0) {
+                // deal damage lmao
+                game.playerHealth -= 1;
+
+                // reset to player turn
+                game.isPlayerTurn = true;
+                game.playerEnergy = game.playerMaxEnergy;
+                game.enemyTurnTimer = 0;
+
+                discard.addAll(menu.selections);
+                menu = drawHand(player.startingHandSize);
+            }
+        }
     }
 
     private void renderDiscard() {
@@ -84,7 +109,13 @@ public class CardGameScreen extends DefaultInputScreen {
 
     @Override
     public boolean keyDown(int keycode) {
+        if (!game.isPlayerTurn) {
+            return false;
+        }
         menu.handleKeyPress(keycode);
+        if (keycode == Input.Keys.ESCAPE) {
+            endPlayerTurn();
+        }
         if (keycode == Input.Keys.ENTER) {
             if (!isPlayable(menu.selection)) {
                 // no energy, or no selection
@@ -99,19 +130,7 @@ public class CardGameScreen extends DefaultInputScreen {
                 // do _not_ discard
             }
             if (game.pendingDraw > 0) {
-                // TODO currently draws _ALL CARDS_ not 1 card at a time
-                List<Card> drawn = new ArrayList<>();
-                if (deck.cards.size() < game.pendingDraw) {
-                    drawn.addAll(deck.draw(game.pendingDraw - deck.cards.size()));
-                    for (Card disc : discard) {
-                        deck.cards.add(disc);
-                        // deck.shuffle();
-                    }
-                    discard.clear();
-                }
-                int amountLeftToDraw = Math.min(game.pendingDraw - drawn.size(), deck.cards.size());
-                drawn.addAll(deck.draw(amountLeftToDraw));
-                this.menu.addSelections(drawn);
+                this.menu.addSelections(deck.draw(game.pendingDraw, discard));
                 game.pendingDraw = 0;
             }
             menu.reset();
@@ -119,6 +138,11 @@ public class CardGameScreen extends DefaultInputScreen {
         return false;
     }
     
+    private void endPlayerTurn() {
+        game.isPlayerTurn = false;
+        game.enemyTurnTimer = game.enemyTurnTotal;
+    }
+
     private boolean isPlayable(Card card) {
         // thoughts -- "X" cost cards may need more than simple property
         return card != null && card.cost <= game.playerEnergy;

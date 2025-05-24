@@ -13,7 +13,7 @@ public abstract class Menu<D> {
     public int current = 0;
     private int count;
     public D selection;
-    protected List<D> selections;
+    public List<D> selections;
     protected final float xOffset;
     protected final float yOffset;
     protected final Provider<Float> xStart;
@@ -27,7 +27,7 @@ public abstract class Menu<D> {
                 float yOffset) {
         this.selections = selections;
         this.count = this.selections.size();
-        this.selection = selections.get(0);
+        this.selection = selections.size() > 0 ? selections.get(0) : null;
         this.inputMap = xOffset != 0 ? Menu.horizontalKeyboardInput : Menu.verticalKeyboardInput;
         this.xStart = xStart;
         this.yStart = yStart;

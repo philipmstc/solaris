@@ -30,6 +30,9 @@ public class Main extends Game {
    public int playerMaxEnergy = 4;
 
    public int pendingDraw = 0;
+   public boolean isPlayerTurn = true;
+   public float enemyTurnTimer = 0;
+   public float enemyTurnTotal = 100;
 
    public void create() {
       batch = new SpriteBatch();
