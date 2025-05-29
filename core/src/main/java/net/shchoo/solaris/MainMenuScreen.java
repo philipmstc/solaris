@@ -48,10 +48,12 @@ public class MainMenuScreen extends DefaultInputScreen {
         if (keycode == Input.Keys.ENTER) {
             switch (menu.current) { 
                 case 0: 
+                    game.previousScreen = this;
                     game.setScreen(new GameScreen(game));
                     dispose();
                     break;
                 case 1: 
+                    game.previousScreen = this;
                     game.setScreen(new GameScreen(game));
                     dispose();
                     break;

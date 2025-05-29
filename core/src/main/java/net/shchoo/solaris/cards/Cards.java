@@ -6,7 +6,7 @@ public class Cards {
     public static final Card Attack = new Card("Attack", 1) {
         @Override
         public Destination onPlay(Main game) {
-            game.enemyHealth -= 1;
+            game.addDamageEvent(1);
             return Destination.DISCARD;
         }
     };
@@ -22,6 +22,13 @@ public class Cards {
         public Destination onPlay(Main game) {
             game.pendingDraw += 2;
             return Destination.EXILE;
+        }
+    };
+    public static final Card DoubleTap = new Card("Attack\nTwice", 2) {
+        public Destination onPlay(Main game) {
+            game.addDamageEvent(1);
+            game.addDamageEvent(1);
+            return Destination.DISCARD;
         }
     };
 }

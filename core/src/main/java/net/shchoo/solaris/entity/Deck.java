@@ -22,18 +22,15 @@ public class Deck implements Entity {
             add(Cards.Attack);
             add(Cards.Attack);
             add(Cards.Attack);
-            add(Cards.Attack);
             add(Cards.Scrape);
             add(Cards.Scrape);
             add(Cards.Defend);
-            add(Cards.Defend);
-            add(Cards.Defend);
-            add(Cards.Defend);
+            add(Cards.DoubleTap);
         }};
     }
 
-    public List<Card> draw(int count, List<Card> discard) { 
-        List<Card> drawn = new ArrayList<>(); 
+    public List<Card> draw(int count, List<Card> discard) {
+        List<Card> drawn = new ArrayList<>();
         while (drawn.size() < count && cards.size() > 0) {
             drawn.add(cards.remove(0));
         }
@@ -49,12 +46,12 @@ public class Deck implements Entity {
     }
 
     @Override
-    public void render(Main game, float x, float y, float delta) { 
-       
+    public void render(Main game, float x, float y, float delta) {
+
         game.batch.begin();
         game.smallFont.setColor(Color.LIME);
         game.smallFont.draw(game.batch,
-            "Deck: " + cards.size(), 
+            "Deck: " + cards.size(),
             (game.viewport.getWorldWidth()/2),
             (game.viewport.getWorldHeight()/2),
             0.00f,
@@ -62,5 +59,5 @@ public class Deck implements Entity {
             false) ;
         game.batch.end();
     }
-    
+
 }

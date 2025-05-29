@@ -15,12 +15,14 @@ import net.shchoo.solaris.entity.Deck;
 import net.shchoo.solaris.entity.Enemy;
 import net.shchoo.solaris.entity.Player;
 import net.shchoo.solaris.ui.CardMenu;
+import net.shchoo.solaris.utils.Timer;
 
 public class CardGameScreen extends DefaultInputScreen {
     private CardMenu menu;
     private Enemy enemy;
     private Player player;
     private Deck deck;
+    private List<Card> exile;
     private List<Card> discard;
 
     public CardGameScreen(Main game, Enemy enemy, Player player, Deck deck) {
@@ -29,6 +31,7 @@ public class CardGameScreen extends DefaultInputScreen {
         this.player = player;
         this.deck = deck;
         this.discard = new ArrayList<>();
+        this.exile = new ArrayList<>();
         this.menu = drawHand(player.startingHandSize);
     }
 
@@ -44,6 +47,7 @@ public class CardGameScreen extends DefaultInputScreen {
 
     @Override
     public void render(float delta) {
+        game.timers();
         ScreenUtils.clear(Color.BLACK);
         game.viewport.apply();
         game.batch.setProjectionMatrix(game.viewport.getCamera().combined);
@@ -55,38 +59,32 @@ public class CardGameScreen extends DefaultInputScreen {
         player.render(game, game.viewport.getWorldWidth() / 3, game.viewport.getWorldHeight() - 1.5f, delta);
         menu.render(game);
 
-        if (!game.isPlayerTurn) {
+        if (game.enemyTurnTimer.isTicking()) {
             game.shape.begin(ShapeType.Filled);
             game.shape.circle(
                 game.viewport.getWorldWidth()/2,
                 game.viewport.getWorldHeight()/2,
-                1 * (game.enemyTurnTimer / game.enemyTurnTotal));
+                1 * (game.enemyTurnTimer.remaining / game.enemyTurnTimer.total));
             game.shape.end();
-
-            // TODO this should probably NOT live in render... 
-            // I presume theres a logical processing equivalent to rendering
-            game.enemyTurnTimer -= 1;
-            if (game.enemyTurnTimer <= 0) {
-                // deal damage lmao
-                game.playerHealth -= 1;
-
-                // reset to player turn
-                game.isPlayerTurn = true;
-                game.playerEnergy = game.playerMaxEnergy;
-                game.enemyTurnTimer = 0;
-
-                discard.addAll(menu.selections);
-                menu = drawHand(player.startingHandSize);
-            }
+        }
+        if (game.playerDamageTimer.isTicking())
+        {
+            game.shape.begin(ShapeType.Filled);
+            game.shape.setColor(Color.MAGENTA);
+            game.shape.circle(
+                game.viewport.getWorldWidth()/2,
+                game.viewport.getWorldHeight()/2,
+                1 * (game.playerDamageTimer.remaining / game.playerDamageTimer.total));
+            game.shape.end();
         }
     }
 
     private void renderDiscard() {
         game.batch.begin();
         game.smallFont.setColor(Color.CORAL);
-        game.smallFont.draw(game.batch, 
+        game.smallFont.draw(game.batch,
             "Discard: " + discard.size(),
-            2.0f + (game.viewport.getWorldWidth()/2), 
+            2.0f + (game.viewport.getWorldWidth()/2),
             (game.viewport.getWorldHeight()/2),
             0.00f,
             Align.center,
@@ -123,7 +121,7 @@ public class CardGameScreen extends DefaultInputScreen {
             }
             Destination d = game.play(menu.selection);
             Card played = menu.removeCurrent();
-            if (d == Destination.DISCARD) { 
+            if (d == Destination.DISCARD) {
                 discard.add(played);
             }
             else if (d == Destination.EXILE) {
@@ -137,10 +135,21 @@ public class CardGameScreen extends DefaultInputScreen {
         }
         return false;
     }
-    
+
     private void endPlayerTurn() {
         game.isPlayerTurn = false;
-        game.enemyTurnTimer = game.enemyTurnTotal;
+        game.enemyTurnTimer = new Timer(100, () -> {
+            // deal damage lmao
+            game.playerHealth -= 1;
+
+            // reset to player turn
+            game.isPlayerTurn = true;
+            game.playerEnergy = game.playerMaxEnergy;
+
+            discard.addAll(menu.selections);
+            menu = drawHand(player.startingHandSize);
+        });
+        game.enemyTurnTimer.start();
     }
 
     private boolean isPlayable(Card card) {

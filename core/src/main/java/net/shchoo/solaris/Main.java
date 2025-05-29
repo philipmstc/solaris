@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import net.shchoo.solaris.cards.Card;
 import net.shchoo.solaris.cards.Card.Destination;
+import net.shchoo.solaris.utils.Timer;
 
 public class Main extends Game {
    public SpriteBatch batch;
@@ -20,6 +22,7 @@ public class Main extends Game {
    public FitViewport viewport;
    public CardGame cardGame;
    public ShapeRenderer shape;
+   public Screen previousScreen = null;
 
    public float enemyHealth = 10;
    public float enemyMaxHealth = 10;
@@ -31,17 +34,17 @@ public class Main extends Game {
 
    public int pendingDraw = 0;
    public boolean isPlayerTurn = true;
-   public float enemyTurnTimer = 0;
-   public float enemyTurnTotal = 100;
+   public Timer enemyTurnTimer = new Timer(100, () -> {});
+   public Timer playerDamageTimer = new Timer(60, () -> {});
 
    public void create() {
       batch = new SpriteBatch();
-      shape = new ShapeRenderer(); 
-      
+      shape = new ShapeRenderer();
+
       smallFont = new BitmapFont(Gdx.files.internal("comic-mono.fnt"));
       bigFont = new BitmapFont(Gdx.files.internal("comic-mono.fnt"));
       viewport = new FitViewport(8, 5);
-      
+
       smallFont.setUseIntegerPositions(false);
       smallFont.getData().setScale(0.66f * (viewport.getWorldHeight() / Gdx.graphics.getHeight() ));
       bigFont.setUseIntegerPositions(false);
@@ -63,6 +66,33 @@ public class Main extends Game {
    public Destination play(Card card) {
       playerEnergy -= card.cost;
       return card.onPlay(this);
+   }
+
+   public void addDamageEvent(float damage)
+   {
+       // TODO replace queueable timers with a linked list, lmao
+       Timer newDamageEvent = new Timer(60, () -> {
+           this.enemyHealth -= damage;
+       });
+
+       if (playerDamageTimer != null && !playerDamageTimer.isTicking()) {
+           this.playerDamageTimer = newDamageEvent;
+           playerDamageTimer.start();
+       }
+       else if (playerDamageTimer != null) { // queue subsequent damages?
+           Runnable old = playerDamageTimer.onStop;
+           playerDamageTimer.onStop = () -> {
+               old.run();
+               playerDamageTimer = newDamageEvent;
+               playerDamageTimer.start();
+           };
+       }
+   }
+
+   public void timers()
+   {
+       enemyTurnTimer.remaining -= 1;
+       playerDamageTimer.remaining -= 1;
    }
 
    public void processCardEffects(List<Consumer<Main>> effects) {
