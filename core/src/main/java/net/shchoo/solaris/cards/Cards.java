@@ -31,4 +31,26 @@ public class Cards {
             return Destination.DISCARD;
         }
     };
+
+    public static final Card Enrage = new Card("Damage\nx 1.1", 1) {
+        public Destination onPlay(Main game) {
+            game.playerDamageBase += 0.1f;
+            return Destination.EXILE;
+        }
+    };
+
+    public static final Card Sharpen = new Card("Damage\n+ 1", 1) {
+        public Destination onPlay(Main game) {
+            game.playerDamageMod += 1;
+            return Destination.EXILE;
+        }
+    };
+
+    public static final Card Relax = new Card("Block 2\nDraw 2", 3) {
+        public Destination onPlay(Main game) {
+            game.playerBlock += 2;
+            game.pendingDraw += 2;
+            return Destination.DISCARD;
+        }
+    };
 }

@@ -14,7 +14,7 @@ import net.shchoo.solaris.cards.Cards;
 
 public class Deck implements Entity {
 
-    public ArrayList<Card> cards;
+    public List<Card> cards;
 
     // default deck constructor -- 4x attack, 4x defend, 2x draw
     public Deck() {
@@ -23,10 +23,16 @@ public class Deck implements Entity {
             add(Cards.Attack);
             add(Cards.Attack);
             add(Cards.Scrape);
-            add(Cards.Scrape);
-            add(Cards.Defend);
             add(Cards.DoubleTap);
+            add(Cards.Defend);
+            add(Cards.Defend);
+            add(Cards.Defend);
         }};
+    }
+
+    public Deck(List<Card> cards) {
+        Collections.shuffle(cards);
+        this.cards = new ArrayList<>(cards);
     }
 
     public List<Card> draw(int count, List<Card> discard) {

@@ -17,13 +17,13 @@ public class GameScreen extends DefaultInputScreen {
         super(game);
         this.menu = Menu.basicMenu(
             Arrays.asList("X", "O", "#"),
-            () -> game.viewport.getWorldWidth() / 4, 
-            () -> 0.33f + game.viewport.getWorldHeight() / 2, 
-            2.0f, 
+            () -> game.viewport.getWorldWidth() / 4,
+            () -> 0.33f + game.viewport.getWorldHeight() / 2,
+            2.0f,
             0.0f);
     }
-    
-    @Override 
+
+    @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);
         game.viewport.apply();
@@ -35,11 +35,11 @@ public class GameScreen extends DefaultInputScreen {
     }
 
     @Override
-    public boolean keyDown(int keycode) { 
-        if (keycode == Input.Keys.ENTER) { 
-            switch (menu.current) { 
-                case 0: 
-                    game.setScreen(new CardGameScreen(game, new Enemy(), new Player(), new Deck()));
+    public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.ENTER) {
+            switch (menu.current) {
+                case 0:
+                    game.setScreen(new CardGameScreen(game, new Enemy(), new Player(), new Deck(game.BASE_DECK)));
                     dispose();
                     break;
             }

@@ -27,6 +27,13 @@ public class CardGameScreen extends DefaultInputScreen {
 
     public CardGameScreen(Main game, Enemy enemy, Player player, Deck deck) {
         super(game);
+        // todo obviously horrendous
+        game.enemyHealth = game.enemyMaxHealth;
+        game.playerEnergy = game.playerMaxEnergy;
+        game.isPlayerTurn = true;
+        game.playerDamageBase = 1;
+        game.playerDamageMod = 0;
+
         this.enemy = enemy;
         this.player = player;
         this.deck = deck;
@@ -67,7 +74,7 @@ public class CardGameScreen extends DefaultInputScreen {
                 1 * (game.enemyTurnTimer.remaining / game.enemyTurnTimer.total));
             game.shape.end();
         }
-        if (game.playerDamageTimer.isTicking())
+        else if (game.playerDamageTimer.isTicking())
         {
             game.shape.begin(ShapeType.Filled);
             game.shape.setColor(Color.MAGENTA);
@@ -76,6 +83,10 @@ public class CardGameScreen extends DefaultInputScreen {
                 game.viewport.getWorldHeight()/2,
                 1 * (game.playerDamageTimer.remaining / game.playerDamageTimer.total));
             game.shape.end();
+        }
+        else if (game.enemyHealth <= 0) {
+            game.setScreen(new CardRewardScreen(game));
+            dispose();
         }
     }
 
@@ -107,7 +118,7 @@ public class CardGameScreen extends DefaultInputScreen {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (!game.isPlayerTurn) {
+        if (!game.isPlayerTurn || game.enemyTurnTimer.isTicking()) {
             return false;
         }
         menu.handleKeyPress(keycode);

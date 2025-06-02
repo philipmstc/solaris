@@ -1,5 +1,6 @@
 package net.shchoo.solaris;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -13,6 +14,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import net.shchoo.solaris.cards.Card;
 import net.shchoo.solaris.cards.Card.Destination;
+import net.shchoo.solaris.cards.Cards;
+import net.shchoo.solaris.utils.Provider;
 import net.shchoo.solaris.utils.Timer;
 
 public class Main extends Game {
@@ -24,18 +27,32 @@ public class Main extends Game {
    public ShapeRenderer shape;
    public Screen previousScreen = null;
 
-   public float enemyHealth = 10;
-   public float enemyMaxHealth = 10;
+   public float enemyHealth = 5;
+   public float enemyMaxHealth = 5;
    public float playerHealth = 8;
    public float playerMaxHealth = 12;
    public float playerBlock = 0;
    public int playerEnergy = 4;
    public int playerMaxEnergy = 4;
+   public float playerDamageBase = 1;
+   public float playerDamageMod = 0;
 
    public int pendingDraw = 0;
    public boolean isPlayerTurn = true;
+   public List<Timer> timers = new ArrayList<>();
    public Timer enemyTurnTimer = new Timer(100, () -> {});
    public Timer playerDamageTimer = new Timer(60, () -> {});
+
+   public List<Card> BASE_DECK = new ArrayList<Card>() {{
+       add(Cards.Attack);
+       add(Cards.Attack);
+       add(Cards.Attack);
+       add(Cards.Scrape);
+       add(Cards.DoubleTap);
+       add(Cards.Defend);
+       add(Cards.Defend);
+       add(Cards.Defend);
+   }};
 
    public void create() {
       batch = new SpriteBatch();
@@ -49,6 +66,9 @@ public class Main extends Game {
       smallFont.getData().setScale(0.66f * (viewport.getWorldHeight() / Gdx.graphics.getHeight() ));
       bigFont.setUseIntegerPositions(false);
       bigFont.getData().setScale(viewport.getWorldHeight() / Gdx.graphics.getHeight());
+
+      timers.add(playerDamageTimer);
+      timers.add(enemyTurnTimer);
 
       this.setScreen(new MainMenuScreen(this));
    }
@@ -72,7 +92,7 @@ public class Main extends Game {
    {
        // TODO replace queueable timers with a linked list, lmao
        Timer newDamageEvent = new Timer(60, () -> {
-           this.enemyHealth -= damage;
+           this.enemyHealth -= (playerDamageBase * damage) + playerDamageMod;
        });
 
        if (playerDamageTimer != null && !playerDamageTimer.isTicking()) {

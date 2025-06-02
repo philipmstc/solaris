@@ -7,6 +7,8 @@ import com.badlogic.gdx.utils.Align;
 import net.shchoo.solaris.Entity;
 import net.shchoo.solaris.Main;
 
+import static net.shchoo.solaris.utils.MathUtils.geZero;
+
 public class Enemy implements Entity {
     @Override
     public void render(Main game, float x, float y, float delta) {
@@ -19,7 +21,7 @@ public class Enemy implements Entity {
         game.shape.rect(
             game.viewport.getWorldWidth()/3,
             game.viewport.getWorldHeight() - 2.0f,
-            (game.viewport.getWorldWidth() / 3 ) * (game.enemyHealth / game.enemyMaxHealth),
+            (game.viewport.getWorldWidth() / 3 ) * geZero(game.enemyHealth / game.enemyMaxHealth),
             0.2f );
         game.shape.end();
     }

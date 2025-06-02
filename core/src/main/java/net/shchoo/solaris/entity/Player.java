@@ -7,6 +7,8 @@ import com.badlogic.gdx.utils.Align;
 import net.shchoo.solaris.Entity;
 import net.shchoo.solaris.Main;
 
+import static net.shchoo.solaris.utils.MathUtils.geZero;
+
 public class Player implements Entity {
 
     public int startingHandSize = 5;
@@ -19,17 +21,17 @@ public class Player implements Entity {
         game.shape.begin(ShapeType.Filled);
         game.shape.setColor(Color.GREEN);
         game.shape.rect(
-            game.viewport.getWorldWidth()/3, 
+            game.viewport.getWorldWidth()/3,
             game.viewport.getWorldHeight() - 1.5f,
-            (game.viewport.getWorldWidth() / 3 ) * (game.playerHealth / game.playerMaxHealth),
+            (game.viewport.getWorldWidth() / 3 ) * geZero(game.playerHealth / game.playerMaxHealth),
             0.2f);
         game.shape.end();
         game.shape.begin(ShapeType.Filled);
         game.shape.setColor(Color.CYAN);
         game.shape.rect(
-            game.viewport.getWorldWidth()/3, 
+            game.viewport.getWorldWidth()/3,
             game.viewport.getWorldHeight() - 1.5f,
-            (game.viewport.getWorldWidth() / 3 ) * (game.playerBlock / game.playerMaxHealth),
+            (game.viewport.getWorldWidth() / 3 ) * geZero(game.playerBlock / game.playerMaxHealth),
             0.2f);
         game.shape.end();
     }
