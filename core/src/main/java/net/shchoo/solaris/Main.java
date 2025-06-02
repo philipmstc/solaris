@@ -18,6 +18,8 @@ import net.shchoo.solaris.cards.Cards;
 import net.shchoo.solaris.utils.Provider;
 import net.shchoo.solaris.utils.Timer;
 
+import static net.shchoo.solaris.utils.MathUtils.geZero;
+
 public class Main extends Game {
    public SpriteBatch batch;
    public BitmapFont smallFont;
@@ -86,6 +88,20 @@ public class Main extends Game {
    public Destination play(Card card) {
       playerEnergy -= card.cost;
       return card.onPlay(this);
+   }
+
+   public void addEnemyDamageEvent(float damage, Runnable other) {
+       enemyTurnTimer = new Timer(100, () -> {
+           if (playerBlock > 0) {
+               float remainingBlock = playerBlock - damage;
+               playerHealth -= geZero(-remainingBlock);
+               playerBlock = geZero(remainingBlock);
+           } else {
+               playerHealth -= damage;
+           }
+           other.run();
+       });
+
    }
 
    public void addDamageEvent(float damage)

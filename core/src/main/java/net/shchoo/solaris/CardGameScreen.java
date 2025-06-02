@@ -45,11 +45,11 @@ public class CardGameScreen extends DefaultInputScreen {
     private CardMenu drawHand(int handSize) {
         List<Card> drawn = deck.draw(handSize, discard);
         return new CardMenu(
-                drawn,
-                () -> game.viewport.getWorldWidth() / 6,
-                () -> -2.0f + (game.viewport.getWorldHeight() / 2),
-                1.1f,
-                0.0f);
+            drawn,
+            () -> game.viewport.getWorldWidth() / 6,
+            () -> -2.0f + (game.viewport.getWorldHeight() / 2),
+            1.1f,
+            0.0f);
     }
 
     @Override
@@ -69,20 +69,21 @@ public class CardGameScreen extends DefaultInputScreen {
         if (game.enemyTurnTimer.isTicking()) {
             game.shape.begin(ShapeType.Filled);
             game.shape.circle(
-                game.viewport.getWorldWidth()/2,
-                game.viewport.getWorldHeight()/2,
+                game.viewport.getWorldWidth() / 2,
+                game.viewport.getWorldHeight() / 2,
                 1 * (game.enemyTurnTimer.remaining / game.enemyTurnTimer.total));
             game.shape.end();
-        }
-        else if (game.playerDamageTimer.isTicking())
-        {
+        } else if (game.playerDamageTimer.isTicking()) {
             game.shape.begin(ShapeType.Filled);
             game.shape.setColor(Color.MAGENTA);
             game.shape.circle(
-                game.viewport.getWorldWidth()/2,
-                game.viewport.getWorldHeight()/2,
+                game.viewport.getWorldWidth() / 2,
+                game.viewport.getWorldHeight() / 2,
                 1 * (game.playerDamageTimer.remaining / game.playerDamageTimer.total));
             game.shape.end();
+        } else if (game.playerHealth <= 0) {
+            // game over
+            System.exit(0);
         }
         else if (game.enemyHealth <= 0) {
             game.setScreen(new CardRewardScreen(game));
@@ -95,8 +96,8 @@ public class CardGameScreen extends DefaultInputScreen {
         game.smallFont.setColor(Color.CORAL);
         game.smallFont.draw(game.batch,
             "Discard: " + discard.size(),
-            2.0f + (game.viewport.getWorldWidth()/2),
-            (game.viewport.getWorldHeight()/2),
+            2.0f + (game.viewport.getWorldWidth() / 2),
+            (game.viewport.getWorldHeight() / 2),
             0.00f,
             Align.center,
             false);
@@ -108,8 +109,8 @@ public class CardGameScreen extends DefaultInputScreen {
         game.smallFont.setColor(Color.GOLDENROD);
         game.smallFont.draw(game.batch,
             "Energy: " + game.playerEnergy + " / " + game.playerMaxEnergy,
-            2.0f + (game.viewport.getWorldWidth()/2),
-            0.25f + (game.viewport.getWorldHeight()/2),
+            2.0f + (game.viewport.getWorldWidth() / 2),
+            0.25f + (game.viewport.getWorldHeight() / 2),
             0.00f,
             Align.center,
             false);
@@ -134,8 +135,7 @@ public class CardGameScreen extends DefaultInputScreen {
             Card played = menu.removeCurrent();
             if (d == Destination.DISCARD) {
                 discard.add(played);
-            }
-            else if (d == Destination.EXILE) {
+            } else if (d == Destination.EXILE) {
                 // do _not_ discard
             }
             if (game.pendingDraw > 0) {
@@ -149,11 +149,7 @@ public class CardGameScreen extends DefaultInputScreen {
 
     private void endPlayerTurn() {
         game.isPlayerTurn = false;
-        game.enemyTurnTimer = new Timer(100, () -> {
-            // deal damage lmao
-            game.playerHealth -= 1;
-
-            // reset to player turn
+        game.addEnemyDamageEvent(1, () -> {
             game.isPlayerTurn = true;
             game.playerEnergy = game.playerMaxEnergy;
 
