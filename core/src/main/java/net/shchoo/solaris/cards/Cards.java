@@ -33,14 +33,25 @@ public class Cards {
         }
     };
 
-    public static final Card Enrage = new Card("Damage\nx 1.1", 1) {
+    // Testing even more queued attacks
+    public static final Card MachineGun = new Card("Attack\nFour Times", 4) {
+        public Destination onPlay(Main game, Entity enemy) {
+            game.addDamageEvent(1, enemy);
+            game.addDamageEvent(1, enemy);
+            game.addDamageEvent(1, enemy);
+            game.addDamageEvent(1, enemy);
+            return Destination.EXILE;
+        }
+    };
+
+    public static final Card Enrage = new Card("Damage\nx1.1", 1) {
         public Destination onPlay(Main game, Entity self) {
             game.player.damageBase += 0.1f;
             return Destination.EXILE;
         }
     };
 
-    public static final Card Sharpen = new Card("Damage\n+ 1", 1) {
+    public static final Card Sharpen = new Card("Damage\n+1", 1) {
         public Destination onPlay(Main game, Entity self) {
             game.player.damageMod += 1;
             return Destination.EXILE;

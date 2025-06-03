@@ -108,17 +108,16 @@ public class Main extends Game {
            enemy.health -= (player.damageBase * damage) + player.damageMod;
        });
 
-       if (playerDamageTimer != null && !playerDamageTimer.isTicking()) {
+       if (playerDamageTimer == null || !playerDamageTimer.isTicking()) {
            this.playerDamageTimer = newDamageEvent;
            playerDamageTimer.start();
        }
-       else if (playerDamageTimer != null) { // queue subsequent damages?
-           Runnable old = playerDamageTimer.onStop;
-           playerDamageTimer.onStop = () -> {
-               old.run();
-               playerDamageTimer = newDamageEvent;
-               playerDamageTimer.start();
-           };
+       else if (playerDamageTimer != null) {
+           Timer queued = playerDamageTimer;
+           while (queued.next != null) {
+               queued = queued.next;
+           }
+           queued.next = newDamageEvent;
        }
    }
 

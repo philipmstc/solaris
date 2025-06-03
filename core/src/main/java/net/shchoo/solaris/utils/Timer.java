@@ -10,9 +10,9 @@ public class Timer {
     public float remaining = 0;
     public float total;
     public Runnable onStop;
+    public Timer next;
 
-    public boolean isTicking()
-    {
+    public boolean isTicking() {
         if (remaining <= 0 && isStarted) {
             stop();
         }
@@ -30,5 +30,12 @@ public class Timer {
         remaining = 0;
         isStarted = false;
         onStop.run();
+        if (next != null) {
+            remaining = next.total;
+            total = next.total;
+            onStop = next.onStop;
+            next = next.next;
+            start();
+        }
     }
 }

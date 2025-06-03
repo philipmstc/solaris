@@ -16,20 +16,6 @@ public class Deck implements EntityI {
 
     public List<Card> cards;
 
-    // default deck constructor -- 4x attack, 4x defend, 2x draw
-    public Deck() {
-        this.cards = new ArrayList<Card>() {{
-            add(Cards.Attack);
-            add(Cards.Attack);
-            add(Cards.Attack);
-            add(Cards.Scrape);
-            add(Cards.DoubleTap);
-            add(Cards.Defend);
-            add(Cards.Defend);
-            add(Cards.Defend);
-        }};
-    }
-
     public Deck(List<Card> cards) {
         Collections.shuffle(cards);
         this.cards = new ArrayList<>(cards);
