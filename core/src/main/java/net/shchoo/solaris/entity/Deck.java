@@ -7,12 +7,12 @@ import java.util.List;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;
 
-import net.shchoo.solaris.Entity;
+import net.shchoo.solaris.EntityI;
 import net.shchoo.solaris.Main;
 import net.shchoo.solaris.cards.Card;
 import net.shchoo.solaris.cards.Cards;
 
-public class Deck implements Entity {
+public class Deck implements EntityI {
 
     public List<Card> cards;
 

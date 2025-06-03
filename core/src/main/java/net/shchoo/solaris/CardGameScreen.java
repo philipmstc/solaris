@@ -15,7 +15,6 @@ import net.shchoo.solaris.entity.Deck;
 import net.shchoo.solaris.entity.Enemy;
 import net.shchoo.solaris.entity.Player;
 import net.shchoo.solaris.ui.CardMenu;
-import net.shchoo.solaris.utils.Timer;
 
 public class CardGameScreen extends DefaultInputScreen {
     private CardMenu menu;
@@ -28,11 +27,10 @@ public class CardGameScreen extends DefaultInputScreen {
     public CardGameScreen(Main game, Enemy enemy, Player player, Deck deck) {
         super(game);
         // todo obviously horrendous
-        game.enemyHealth = game.enemyMaxHealth;
-        game.playerEnergy = game.playerMaxEnergy;
+        player.energy = player.maxEnergy;
         game.isPlayerTurn = true;
-        game.playerDamageBase = 1;
-        game.playerDamageMod = 0;
+        player.damageBase = 1;
+        player.damageMod = 0;
 
         this.enemy = enemy;
         this.player = player;
@@ -66,6 +64,7 @@ public class CardGameScreen extends DefaultInputScreen {
         player.render(game, game.viewport.getWorldWidth() / 3, game.viewport.getWorldHeight() - 1.5f, delta);
         menu.render(game);
 
+        // todo queued attacks can be stored until next battle currently!!
         if (game.enemyTurnTimer.isTicking()) {
             game.shape.begin(ShapeType.Filled);
             game.shape.circle(
@@ -81,11 +80,11 @@ public class CardGameScreen extends DefaultInputScreen {
                 game.viewport.getWorldHeight() / 2,
                 1 * (game.playerDamageTimer.remaining / game.playerDamageTimer.total));
             game.shape.end();
-        } else if (game.playerHealth <= 0) {
+        } else if (player.health <= 0) {
             // game over
             System.exit(0);
         }
-        else if (game.enemyHealth <= 0) {
+        else if (enemy.health <= 0) {
             game.setScreen(new CardRewardScreen(game));
             dispose();
         }
@@ -108,7 +107,7 @@ public class CardGameScreen extends DefaultInputScreen {
         game.batch.begin();
         game.smallFont.setColor(Color.GOLDENROD);
         game.smallFont.draw(game.batch,
-            "Energy: " + game.playerEnergy + " / " + game.playerMaxEnergy,
+            "Energy: " + player.energy + " / " + player.maxEnergy,
             2.0f + (game.viewport.getWorldWidth() / 2),
             0.25f + (game.viewport.getWorldHeight() / 2),
             0.00f,
@@ -131,7 +130,7 @@ public class CardGameScreen extends DefaultInputScreen {
                 // no energy, or no selection
                 return false;
             }
-            Destination d = game.play(menu.selection);
+            Destination d = game.play(menu.selection, enemy);
             Card played = menu.removeCurrent();
             if (d == Destination.DISCARD) {
                 discard.add(played);
@@ -151,7 +150,7 @@ public class CardGameScreen extends DefaultInputScreen {
         game.isPlayerTurn = false;
         game.addEnemyDamageEvent(1, () -> {
             game.isPlayerTurn = true;
-            game.playerEnergy = game.playerMaxEnergy;
+            player.energy = player.maxEnergy;
 
             discard.addAll(menu.selections);
             menu = drawHand(player.startingHandSize);
@@ -161,6 +160,6 @@ public class CardGameScreen extends DefaultInputScreen {
 
     private boolean isPlayable(Card card) {
         // thoughts -- "X" cost cards may need more than simple property
-        return card != null && card.cost <= game.playerEnergy;
+        return card != null && card.cost <= player.energy;
     }
 }

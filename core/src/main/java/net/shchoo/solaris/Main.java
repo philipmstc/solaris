@@ -15,7 +15,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import net.shchoo.solaris.cards.Card;
 import net.shchoo.solaris.cards.Card.Destination;
 import net.shchoo.solaris.cards.Cards;
-import net.shchoo.solaris.utils.Provider;
+import net.shchoo.solaris.entity.Enemy;
+import net.shchoo.solaris.entity.Player;
+import net.shchoo.solaris.sys.EnemyGenerator;
 import net.shchoo.solaris.utils.Timer;
 
 import static net.shchoo.solaris.utils.MathUtils.geZero;
@@ -29,21 +31,16 @@ public class Main extends Game {
    public ShapeRenderer shape;
    public Screen previousScreen = null;
 
-   public float enemyHealth = 5;
-   public float enemyMaxHealth = 5;
-   public float playerHealth = 8;
-   public float playerMaxHealth = 12;
-   public float playerBlock = 0;
-   public int playerEnergy = 4;
-   public int playerMaxEnergy = 4;
-   public float playerDamageBase = 1;
-   public float playerDamageMod = 0;
 
    public int pendingDraw = 0;
    public boolean isPlayerTurn = true;
    public List<Timer> timers = new ArrayList<>();
    public Timer enemyTurnTimer = new Timer(100, () -> {});
    public Timer playerDamageTimer = new Timer(60, () -> {});
+
+   public Player player = new Player();
+
+   public EnemyGenerator enemyGenerator = new EnemyGenerator();
 
    public List<Card> BASE_DECK = new ArrayList<Card>() {{
        add(Cards.Attack);
@@ -85,30 +82,30 @@ public class Main extends Game {
       bigFont.dispose();
    }
 
-   public Destination play(Card card) {
-      playerEnergy -= card.cost;
-      return card.onPlay(this);
+   public Destination play(Card card, Entity enemy) {
+      player.energy -= card.cost;
+      return card.onPlay(this, enemy);
    }
 
    public void addEnemyDamageEvent(float damage, Runnable other) {
        enemyTurnTimer = new Timer(100, () -> {
-           if (playerBlock > 0) {
-               float remainingBlock = playerBlock - damage;
-               playerHealth -= geZero(-remainingBlock);
-               playerBlock = geZero(remainingBlock);
+           if (player.block > 0) {
+               float remainingBlock = player.block - damage;
+               player.health -= geZero(-remainingBlock);
+               player.block = geZero(remainingBlock);
            } else {
-               playerHealth -= damage;
+               player.health -= damage;
            }
            other.run();
        });
 
    }
 
-   public void addDamageEvent(float damage)
+   public void addDamageEvent(float damage, Entity enemy)
    {
        // TODO replace queueable timers with a linked list, lmao
        Timer newDamageEvent = new Timer(60, () -> {
-           this.enemyHealth -= (playerDamageBase * damage) + playerDamageMod;
+           enemy.health -= (player.damageBase * damage) + player.damageMod;
        });
 
        if (playerDamageTimer != null && !playerDamageTimer.isTicking()) {
@@ -123,6 +120,10 @@ public class Main extends Game {
                playerDamageTimer.start();
            };
        }
+   }
+
+   public Enemy newEnemy() {
+       return enemyGenerator.generate();
    }
 
    public void timers()

@@ -9,9 +9,20 @@ import net.shchoo.solaris.Main;
 
 import static net.shchoo.solaris.utils.MathUtils.geZero;
 
-public class Player implements Entity {
+public class Player extends Entity {
+
+    public Player() {
+        this.health = 10;
+        this.maxHealth = 10;
+    }
 
     public int startingHandSize = 5;
+
+    public float block = 0;
+    public int energy = 4;
+    public int maxEnergy = 4;
+    public float damageBase = 1;
+    public float damageMod = 0;
 
     @Override
     public void render(Main game, float x, float y, float delta) {
@@ -24,7 +35,7 @@ public class Player implements Entity {
         game.shape.rect(
             game.viewport.getWorldWidth()/3,
             game.viewport.getWorldHeight() - 1.5f,
-            (game.viewport.getWorldWidth() / 3 ) * geZero(game.playerHealth / game.playerMaxHealth),
+            (game.viewport.getWorldWidth() / 3 ) * geZero(health / maxHealth),
             0.2f);
         game.shape.end();
         game.shape.begin(ShapeType.Filled);
@@ -32,7 +43,7 @@ public class Player implements Entity {
         game.shape.rect(
             game.viewport.getWorldWidth()/3,
             game.viewport.getWorldHeight() - 1.5f,
-            (game.viewport.getWorldWidth() / 3 ) * geZero(game.playerBlock / game.playerMaxHealth),
+            (game.viewport.getWorldWidth() / 3 ) * geZero(block / maxHealth),
             0.2f);
         game.shape.end();
     }

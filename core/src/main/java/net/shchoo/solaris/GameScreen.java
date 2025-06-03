@@ -39,7 +39,7 @@ public class GameScreen extends DefaultInputScreen {
         if (keycode == Input.Keys.ENTER) {
             switch (menu.current) {
                 case 0:
-                    game.setScreen(new CardGameScreen(game, new Enemy(), new Player(), new Deck(game.BASE_DECK)));
+                    game.setScreen(new CardGameScreen(game, game.newEnemy(), game.player, new Deck(game.BASE_DECK)));
                     dispose();
                     break;
             }

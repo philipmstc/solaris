@@ -9,7 +9,8 @@ import net.shchoo.solaris.Main;
 
 import static net.shchoo.solaris.utils.MathUtils.geZero;
 
-public class Enemy implements Entity {
+public class Enemy extends Entity {
+
     @Override
     public void render(Main game, float x, float y, float delta) {
         game.batch.begin();
@@ -21,7 +22,7 @@ public class Enemy implements Entity {
         game.shape.rect(
             game.viewport.getWorldWidth()/3,
             game.viewport.getWorldHeight() - 2.0f,
-            (game.viewport.getWorldWidth() / 3 ) * geZero(game.enemyHealth / game.enemyMaxHealth),
+            (game.viewport.getWorldWidth() / 3 ) * geZero(health / maxHealth),
             0.2f );
         game.shape.end();
     }
